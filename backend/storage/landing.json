@@ -1,0 +1,125 @@
+{
+  "hero": {
+    "title": "Vayu POS - Smart Restaurant Billing system",
+    "subtitle": "Streamline your restaurant operations",
+    "requestBtn": "Request Demo",
+    "pricingBtn": "View Pricing demo"
+  },
+  "features": [
+    {
+      "id": 1,
+      "title": "Billing",
+      "description": "Process orders instantly",
+      "icon": "security",
+      "active": true
+    },
+    {
+      "id": 2,
+      "title": "testing",
+      "description": "all testing",
+      "icon": "analytics",
+      "active": true
+    },
+    {
+      "id": 3,
+      "title": "riyjon",
+      "description": "done ",
+      "icon": "inventory",
+      "active": true
+    }
+  ],
+  "pricing": [
+    {
+      "id": 1,
+      "name": "Basic",
+      "price": 5999,
+      "popular": true,
+      "features": [
+        "1 Branch",
+        "Basic Billing"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "testing",
+      "price": 99,
+      "popular": false,
+      "features": [
+        "testing",
+        "testing",
+        "testing",
+        "testing"
+      ]
+    }
+  ],
+  "demoForm": {
+    "title": "Request Your Free Demo",
+    "subtitle": "See Vayu POS in action. Fill out the form below and our team will get in touch with you shortly.",
+    "submitText": "Request Demo",
+    "fields": [
+      {
+        "key": "licenseNumber",
+        "label": "Hotel License Number",
+        "placeholder": "Enter license number",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "hotelName",
+        "label": "Hotel Name",
+        "placeholder": "Enter your restaurant/hotel name",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "ownerName",
+        "label": "Owner Name",
+        "placeholder": "Enter your full name",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "phone",
+        "label": "Phone Number",
+        "placeholder": "Enter phone number",
+        "type": "tel",
+        "required": true
+      },
+      {
+        "key": "emaill",
+        "label": "Email Address",
+        "placeholder": "Enter your email",
+        "type": "email",
+        "required": true
+      },
+      {
+        "key": "city",
+        "label": "Cityyy",
+        "placeholder": "Enter your city",
+        "type": "text",
+        "required": true
+      },
+      {
+        "key": "branches",
+        "label": "Number of Branches",
+        "placeholder": "How many branches do you have?",
+        "type": "number",
+        "required": true
+      },
+      {
+        "key": "message",
+        "label": "Additional Message (Optional)",
+        "placeholder": "Tell us more about your requirements...",
+        "type": "textarea",
+        "required": false
+      },
+      {
+        "key": "email22",
+        "label": "email-test22",
+        "placeholder": "testing-place",
+        "type": "email",
+        "required": false
+      }
+    ]
+  }
+}

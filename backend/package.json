@@ -1,0 +1,32 @@
+{
+  "name": "vayu-pos-demo-server",
+  "version": "1.0.0",
+  "description": "Node.js Express server for Vayu POS demo requests with email notifications",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pos",
+    "demo",
+    "email",
+    "nodemailer",
+    "express",
+    "vayu"
+  ],
+  "author": "Your Name",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1",
+    "nodemailer": "^8.0.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Card from '../components/ui/Card'
 import { useTheme } from '../context/ThemeContext.jsx'
 import { getThemeConfig } from '../theme/designSystem.js'
+import { API_BASE_URL } from '../config/api.js'
 
 const LeadsPage = () => {
 	const [leads, setLeads] = useState([])
@@ -12,7 +13,7 @@ const LeadsPage = () => {
 	useEffect(() => {
 		const fetchLeads = async () => {
 			try {
-				const response = await fetch('http://localhost:8000/api/demo-request')
+				const response = await fetch(`${API_BASE_URL}/api/demo-request`)
 				if (!response.ok) {
 					throw new Error(`Failed to fetch leads: ${response.status}`)
 				}

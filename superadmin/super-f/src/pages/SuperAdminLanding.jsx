@@ -3,8 +3,7 @@ import Card from '../components/ui/Card';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { getThemeConfig } from '../theme/designSystem.js';
 import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings } from 'lucide-react';
-
-const API_BASE_URL = 'http://localhost:8000';
+import { API_BASE_URL } from '../config/api.js';
 
 const SECTION_KEYS = {
   hero: 'hero',

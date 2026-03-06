@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Plus, Eye, CheckCircle2, XCircle, Trash2, X, Pencil } from 'lucide-react'
 import Card from '../components/ui/Card'
+import { API_BASE_URL as BASE_URL } from '../config/api.js'
 
 const initialFormState = {
   hotelName: '',
@@ -54,7 +55,7 @@ const addressFields = [
 const inputClass =
   'w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400 dark:border-white/10 dark:bg-[#0b1f2a] dark:text-white'
 
-const API_BASE_URL = 'http://localhost:8000/api/customers'
+const API_BASE_URL = `${BASE_URL}/api/customers`
 
 const statusStyles = {
   'Pending Verification': 'border border-yellow-400/40 bg-yellow-100 text-yellow-700 dark:border-yellow-400/30 dark:bg-yellow-500/20 dark:text-yellow-200',

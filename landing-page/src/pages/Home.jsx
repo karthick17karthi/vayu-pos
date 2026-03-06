@@ -3,7 +3,11 @@ import { motion } from 'framer-motion'
 import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings, Menu, X, Check, LayoutGrid } from 'lucide-react'
 import { ThemeToggleButton, useTheme } from '../context/ThemeContext'
 
-const API_BASE_URL = 'http://localhost:8000'
+const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV
+  ? 'http://localhost:8000'
+  : 'https://vayu-backend-o4xa.onrender.com')
+
+const API_BASE_URL = rawApiBaseUrl.replace(/\/$/, '')
 
 const FEATURE_VISUALS = {
   billing: { icon: CreditCard, from: 'from-blue-500', to: 'to-blue-600', bg: 'from-blue-400 to-blue-600' },

@@ -3,6 +3,12 @@ import { motion } from 'framer-motion'
 import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings, Menu, X, Check } from 'lucide-react'
 import emailjs from '@emailjs/browser'
 
+const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV
+  ? 'http://localhost:8000'
+  : 'https://vayu-backend-o4xa.onrender.com')
+
+const API_BASE_URL = rawApiBaseUrl.replace(/\/$/, '')
+
 // Icon mapping for dynamic features
 const FEATURE_ICONS = {
   billing: { icon: CreditCard, color: 'from-blue-500 to-blue-600', blur: 'from-blue-400 to-blue-600' },
@@ -44,7 +50,7 @@ const VayuLanding = () => {
   useEffect(() => {
     const fetchLandingData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/landing')
+        const response = await fetch(`${API_BASE_URL}/api/landing`)
         if (response.ok) {
           const data = await response.json()
           console.log('Fetched landing data:', data)
@@ -84,7 +90,7 @@ const VayuLanding = () => {
     setIsLoading(true)
 
     try {
-      const response = await fetch('http://localhost:5000/api/demo-request', {
+      const response = await fetch(`${API_BASE_URL}/api/demo-request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

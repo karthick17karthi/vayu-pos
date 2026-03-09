@@ -39,8 +39,25 @@ class DemoFormSection(BaseModel):
     fields: list[DemoFormField]
 
 
+class FooterContactItem(BaseModel):
+    type: str = Field(..., min_length=1)
+    value: str = Field(..., min_length=1)
+
+
+class FooterSection(BaseModel):
+    brandTitle: str = Field(..., min_length=1)
+    brandSubtitle: str = Field(..., min_length=1)
+    description: str = Field(..., min_length=1)
+    quickLinksTitle: str = Field(..., min_length=1)
+    quickLinks: list[str] = Field(default_factory=list)
+    contactTitle: str = Field(..., min_length=1)
+    contacts: list[FooterContactItem] = Field(default_factory=list)
+    copyrightText: str = Field(..., min_length=1)
+
+
 class LandingPageContent(BaseModel):
     hero: HeroSection
     features: list[FeatureItem] = Field(default_factory=list)
     pricing: list[PricingPlan] = Field(default_factory=list)
     demoForm: DemoFormSection
+    footer: FooterSection

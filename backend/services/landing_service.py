@@ -94,6 +94,20 @@ DEFAULT_LANDING_CONTENT = {
             },
         ],
     },
+    "footer": {
+        "brandTitle": "Vayu POS",
+        "brandSubtitle": "Restaurant Management Made Easy",
+        "description": "Efficient restaurant management for owners, staff, and administrators. Simplify billing, tracking, and communication in one platform.",
+        "quickLinksTitle": "Quick Links",
+        "quickLinks": ["Features", "Pricing", "Request Demo"],
+        "contactTitle": "Contact Info",
+        "contacts": [
+            {"type": "phone", "value": "+91 73581 05293"},
+            {"type": "email", "value": "support@vayupos.com"},
+            {"type": "location", "value": "Madhapur, Hyderabad, Telangana 500032"},
+        ],
+        "copyrightText": "(c) {year} Vayu POS. All rights reserved.",
+    },
 }
 
 

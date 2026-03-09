@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings, Menu, X, Check, LayoutGrid } from 'lucide-react'
+import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings, Menu, X, Check, LayoutGrid, Phone, Mail, MapPin, Link2 } from 'lucide-react'
 import { ThemeToggleButton, useTheme } from '../context/ThemeContext'
 
 const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV
@@ -21,6 +21,14 @@ const FEATURE_VISUALS = {
 }
 
 const getFeatureVisual = (iconKey) => FEATURE_VISUALS[iconKey] || FEATURE_VISUALS.billing
+
+const getFooterContactIcon = (type) => {
+  const normalized = String(type || '').toLowerCase()
+  if (normalized === 'phone') return Phone
+  if (normalized === 'email') return Mail
+  if (normalized === 'location') return MapPin
+  return Link2
+}
 
 const Home = () => {
   const { isDark } = useTheme()
@@ -68,6 +76,14 @@ const Home = () => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
       setIsMobileMenuOpen(false)
     }
+  }
+
+  const handleFooterQuickLinkClick = (linkText) => {
+    const text = String(linkText || '').toLowerCase()
+    if (text.includes('feature')) return scrollToSection('features')
+    if (text.includes('pricing')) return scrollToSection('pricing')
+    if (text.includes('demo') || text.includes('request')) return scrollToSection('demo')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   // Handle form input changes
@@ -196,20 +212,20 @@ const Home = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <button 
-                onClick={() => scrollToSection('features')} 
+              <button
+                onClick={() => scrollToSection('features')}
                 className="text-slate-700 dark:text-slate-200 hover:text-teal-500 dark:hover:text-cyan-300 font-medium transition-colors duration-200"
               >
                 Features
               </button>
-              <button 
-                onClick={() => scrollToSection('pricing')} 
+              <button
+                onClick={() => scrollToSection('pricing')}
                 className="text-slate-700 dark:text-slate-200 hover:text-teal-500 dark:hover:text-cyan-300 font-medium transition-colors duration-200"
               >
                 Pricing
               </button>
-              <button 
-                onClick={() => scrollToSection('demo')} 
+              <button
+                onClick={() => scrollToSection('demo')}
                 className="bg-gradient-to-r from-teal-500 to-cyan-400 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-[0_0_18px_rgba(34,211,238,0.45)]"
               >
                 Demo
@@ -218,7 +234,7 @@ const Home = () => {
             </div>
 
             {/* Mobile Menu Button */}
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={`md:hidden transition-colors duration-200 ${isDark ? 'text-slate-100 hover:text-cyan-300' : 'text-slate-700 hover:text-teal-500'}`}
             >
@@ -536,17 +552,57 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#164d5b] bg-[linear-gradient(90deg,#0a3a49_0%,#072f3b_55%,#062734_100%)]">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="text-2xl font-extrabold text-white mb-4 tracking-[0.01em]">
-            Vayu POS
+      <footer className="py-14 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#164d5b] bg-[linear-gradient(90deg,#0a3a49_0%,#072f3b_55%,#062734_100%)]">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+            <div>
+              <div className="text-3xl font-extrabold text-white tracking-[0.01em]">
+                {landingData.footer?.brandTitle || 'Vayu POS'}
+              </div>
+              <p className="mt-2 text-[#42b2ff] text-lg font-medium">
+                {landingData.footer?.brandSubtitle || 'Restaurant Management Made Easy'}
+              </p>
+              <p className="mt-6 text-[#d2e0e7] leading-relaxed text-lg md:text-xl font-medium">
+                {landingData.footer?.description || 'Efficient restaurant management in one platform.'}
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-white text-2xl font-bold mb-6">{landingData.footer?.quickLinksTitle || 'Quick Links'}</h3>
+              <div className="flex flex-col gap-4">
+                {(landingData.footer?.quickLinks || []).map((link, index) => (
+                  <button
+                    key={`footer-link-${index}`}
+                    onClick={() => handleFooterQuickLinkClick(link)}
+                    className="text-left text-[#b9cad5] text-lg md:text-xl leading-[1.2] hover:text-white transition-colors"
+                  >
+                    {link}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-white text-2xl font-bold mb-6">{landingData.footer?.contactTitle || 'Contact Info'}</h3>
+              <div className="space-y-5">
+                {(landingData.footer?.contacts || []).map((item, index) => {
+                  const Icon = getFooterContactIcon(item.type)
+                  return (
+                    <div key={`footer-contact-${index}`} className="flex items-start gap-4 text-[#b9cad5]">
+                      <Icon className="mt-1 h-6 w-6 text-[#42b2ff]" />
+                      <span className="text-lg md:text-xl leading-[1.25]">{item.value}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
-          <p className="text-[#d2e0e7] mb-6 transition-colors duration-300">
-            Revolutionizing restaurant management with smart technology
-          </p>
-          <div className="border-t border-[#2c5967] pt-8 transition-colors duration-300">
-            <p className="text-[#c3d4dc] text-sm">
-              © {new Date().getFullYear()} Vayu POS. All rights reserved.
+
+          <div className="border-t border-[#2c5967] mt-10 pt-8 text-center">
+            <p className="text-[#c3d4dc] text-base md:text-lg">
+              {(landingData.footer?.copyrightText || '(c) {year} Vayu POS. All rights reserved.')
+                .replace('{year}', new Date().getFullYear())
+                .replace('(c)', '©')}
             </p>
           </div>
         </div>

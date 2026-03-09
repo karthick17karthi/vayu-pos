@@ -10,6 +10,7 @@ const SECTION_KEYS = {
   features: 'features',
   pricing: 'pricing',
   demoForm: 'demoForm',
+  footer: 'footer',
 };
 
 const MAX_FEATURES = 8;
@@ -39,11 +40,13 @@ export default function SuperAdminLanding() {
   const [featuresDraft, setFeaturesDraft] = useState([]);
   const [pricingDraft, setPricingDraft] = useState([]);
   const [demoFormDraft, setDemoFormDraft] = useState(null);
+  const [footerDraft, setFooterDraft] = useState(null);
 
   const [heroEditMode, setHeroEditMode] = useState(false);
   const [featuresEditMode, setFeaturesEditMode] = useState(false);
   const [pricingEditMode, setPricingEditMode] = useState(false);
   const [demoFormEditMode, setDemoFormEditMode] = useState(false);
+  const [footerEditMode, setFooterEditMode] = useState(false);
 
   // Popup modal states
   const [showFeatureModal, setShowFeatureModal] = useState(false);
@@ -60,6 +63,7 @@ export default function SuperAdminLanding() {
     features: false,
     pricing: false,
     demoForm: false,
+    footer: false,
   });
 
   const [sectionSuccess, setSectionSuccess] = useState({
@@ -67,6 +71,7 @@ export default function SuperAdminLanding() {
     features: '',
     pricing: '',
     demoForm: '',
+    footer: '',
   });
 
   const confirmAction = (message) => window.confirm(message);
@@ -90,6 +95,22 @@ export default function SuperAdminLanding() {
       })),
     );
     setDemoFormDraft(source.demoForm);
+    setFooterDraft(
+      source.footer ?? {
+        brandTitle: 'Vayu POS',
+        brandSubtitle: 'Restaurant Management Made Easy',
+        description: 'Efficient restaurant management in one platform.',
+        quickLinksTitle: 'Quick Links',
+        quickLinks: ['Features', 'Pricing', 'Request Demo'],
+        contactTitle: 'Contact Info',
+        contacts: [
+          { type: 'phone', value: '+91 73581 05293' },
+          { type: 'email', value: 'support@vayupos.com' },
+          { type: 'location', value: 'Madhapur, Hyderabad, Telangana 500032' },
+        ],
+        copyrightText: '© {year} Vayu POS. All rights reserved.',
+      },
+    );
   };
 
   const fetchLandingData = async () => {
@@ -161,7 +182,9 @@ export default function SuperAdminLanding() {
           ? 'Features section saved'
           : sectionKey === SECTION_KEYS.pricing
           ? 'Pricing section saved'
-          : 'Demo form section saved';
+          : sectionKey === SECTION_KEYS.demoForm
+          ? 'Demo form section saved'
+          : 'Footer section saved';
 
       setSectionSuccess((prev) => ({ ...prev, [sectionKey]: `${successLabel} successfully.` }));
 
@@ -169,6 +192,7 @@ export default function SuperAdminLanding() {
       if (sectionKey === SECTION_KEYS.features) setFeaturesEditMode(false);
       if (sectionKey === SECTION_KEYS.pricing) setPricingEditMode(false);
       if (sectionKey === SECTION_KEYS.demoForm) setDemoFormEditMode(false);
+      if (sectionKey === SECTION_KEYS.footer) setFooterEditMode(false);
 
       setTimeout(() => {
         setSectionSuccess((prev) => ({ ...prev, [sectionKey]: '' }));
@@ -198,6 +222,13 @@ export default function SuperAdminLanding() {
   const cancelDemoFormEdit = () => {
     if (data?.demoForm) setDemoFormDraft(data.demoForm);
     setDemoFormEditMode(false);
+  };
+
+  const cancelFooterEdit = () => {
+    if (data?.footer) {
+      setFooterDraft(data.footer);
+    }
+    setFooterEditMode(false);
   };
 
   const updateHero = (field, value) => {
@@ -342,6 +373,65 @@ export default function SuperAdminLanding() {
         fields: updatedFields,
       };
     });
+  };
+
+  const updateFooter = (field, value) => {
+    setFooterDraft((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const updateFooterQuickLink = (index, value) => {
+    setFooterDraft((prev) => {
+      const next = [...(prev?.quickLinks ?? [])];
+      next[index] = value;
+      return {
+        ...prev,
+        quickLinks: next,
+      };
+    });
+  };
+
+  const addFooterQuickLink = () => {
+    setFooterDraft((prev) => ({
+      ...prev,
+      quickLinks: [...(prev?.quickLinks ?? []), 'New Link'],
+    }));
+  };
+
+  const deleteFooterQuickLink = (index) => {
+    if (!confirmAction('Are you sure you want to delete this quick link?')) return;
+    setFooterDraft((prev) => ({
+      ...prev,
+      quickLinks: (prev?.quickLinks ?? []).filter((_, i) => i !== index),
+    }));
+  };
+
+  const updateFooterContact = (index, field, value) => {
+    setFooterDraft((prev) => {
+      const next = [...(prev?.contacts ?? [])];
+      next[index] = { ...next[index], [field]: value };
+      return {
+        ...prev,
+        contacts: next,
+      };
+    });
+  };
+
+  const addFooterContact = () => {
+    setFooterDraft((prev) => ({
+      ...prev,
+      contacts: [...(prev?.contacts ?? []), { type: 'phone', value: '' }],
+    }));
+  };
+
+  const deleteFooterContact = (index) => {
+    if (!confirmAction('Are you sure you want to delete this contact item?')) return;
+    setFooterDraft((prev) => ({
+      ...prev,
+      contacts: (prev?.contacts ?? []).filter((_, i) => i !== index),
+    }));
   };
 
   const formatFieldKey = (key) =>
@@ -908,6 +998,200 @@ export default function SuperAdminLanding() {
               </div>
             </div>
           ))}
+        </div>
+      </Card>
+
+      {/* Footer Section */}
+      <Card
+        title="Footer Section"
+        actions={
+          <>
+            <button
+              onClick={() => {
+                setFooterEditMode(true);
+                resetSectionSuccess(SECTION_KEYS.footer);
+              }}
+              disabled={footerEditMode}
+              className="rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-700 disabled:opacity-50 dark:border-white/10 dark:bg-white/10 dark:text-slate-100"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to save Footer Section changes?')) return;
+                saveSection(SECTION_KEYS.footer, footerDraft);
+              }}
+              disabled={!footerEditMode || savingState.footer}
+              className={`px-3 py-2 ${primaryButton} text-sm disabled:opacity-60 disabled:cursor-not-allowed`}
+            >
+              {savingState.footer ? 'Saving...' : 'Save'}
+            </button>
+            <button
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to cancel Footer Section changes?')) return;
+                cancelFooterEdit();
+              }}
+              disabled={!footerEditMode}
+              className="px-3 py-2 rounded-lg bg-red-500/80 text-white text-sm disabled:opacity-50"
+            >
+              Cancel
+            </button>
+          </>
+        }
+      >
+        {sectionSuccess.footer && (
+          <p className="mb-4 rounded-lg border border-green-500/30 bg-green-500/10 px-3 py-2 text-sm text-green-700 dark:text-green-200">
+            {sectionSuccess.footer}
+          </p>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Brand Title</label>
+            <input
+              type="text"
+              value={footerDraft?.brandTitle ?? ''}
+              onChange={(e) => updateFooter('brandTitle', e.target.value)}
+              disabled={!footerEditMode}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Brand Subtitle</label>
+            <input
+              type="text"
+              value={footerDraft?.brandSubtitle ?? ''}
+              onChange={(e) => updateFooter('brandSubtitle', e.target.value)}
+              disabled={!footerEditMode}
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Description</label>
+          <textarea
+            rows="3"
+            value={footerDraft?.description ?? ''}
+            onChange={(e) => updateFooter('description', e.target.value)}
+            disabled={!footerEditMode}
+            className={inputClass}
+          />
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Quick Links Title</label>
+            <input
+              type="text"
+              value={footerDraft?.quickLinksTitle ?? ''}
+              onChange={(e) => updateFooter('quickLinksTitle', e.target.value)}
+              disabled={!footerEditMode}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Contact Title</label>
+            <input
+              type="text"
+              value={footerDraft?.contactTitle ?? ''}
+              onChange={(e) => updateFooter('contactTitle', e.target.value)}
+              disabled={!footerEditMode}
+              className={inputClass}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-[#0f2530]">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Quick Links</h3>
+              <button
+                onClick={addFooterQuickLink}
+                disabled={!footerEditMode}
+                className={`${primaryButton} px-3 py-1 text-xs disabled:opacity-60 disabled:cursor-not-allowed`}
+              >
+                + Add Link
+              </button>
+            </div>
+            <div className="space-y-2">
+              {(footerDraft?.quickLinks ?? []).map((link, index) => (
+                <div key={`footer-link-${index}`} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={link}
+                    onChange={(e) => updateFooterQuickLink(index, e.target.value)}
+                    disabled={!footerEditMode}
+                    className={inputClass}
+                  />
+                  <button
+                    onClick={() => deleteFooterQuickLink(index)}
+                    disabled={!footerEditMode}
+                    className="px-3 py-1 bg-red-500/80 text-white rounded hover:bg-red-500 text-xs font-medium disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-[#0f2530]">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Contact Items</h3>
+              <button
+                onClick={addFooterContact}
+                disabled={!footerEditMode}
+                className={`${primaryButton} px-3 py-1 text-xs disabled:opacity-60 disabled:cursor-not-allowed`}
+              >
+                + Add Contact
+              </button>
+            </div>
+            <div className="space-y-2">
+              {(footerDraft?.contacts ?? []).map((contact, index) => (
+                <div key={`footer-contact-${index}`} className="grid grid-cols-1 md:grid-cols-[130px_1fr_auto] gap-2 items-center">
+                  <select
+                    value={contact.type}
+                    onChange={(e) => updateFooterContact(index, 'type', e.target.value)}
+                    disabled={!footerEditMode}
+                    className={inputClass}
+                  >
+                    <option value="phone">Phone</option>
+                    <option value="email">Email</option>
+                    <option value="location">Location</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                  <input
+                    type="text"
+                    value={contact.value}
+                    onChange={(e) => updateFooterContact(index, 'value', e.target.value)}
+                    disabled={!footerEditMode}
+                    className={inputClass}
+                    placeholder="Enter contact value"
+                  />
+                  <button
+                    onClick={() => deleteFooterContact(index)}
+                    disabled={!footerEditMode}
+                    className="px-3 py-1 bg-red-500/80 text-white rounded hover:bg-red-500 text-xs font-medium disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Copyright Text</label>
+          <input
+            type="text"
+            value={footerDraft?.copyrightText ?? ''}
+            onChange={(e) => updateFooter('copyrightText', e.target.value)}
+            disabled={!footerEditMode}
+            className={inputClass}
+            placeholder="Use {year} to auto insert the year"
+          />
         </div>
       </Card>
 

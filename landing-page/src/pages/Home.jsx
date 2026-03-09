@@ -536,17 +536,17 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#c9d6df]/70 dark:border-[#1d3f4c]/90 bg-gradient-to-b from-[#f2f4f7]/78 via-[#e9edf2]/70 to-[#d7dee7]/74 dark:from-[#0b3642]/96 dark:via-[#082f3a]/96 dark:to-[#071f27]/98 backdrop-blur-md">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.35),rgba(255,255,255,0)_38%),radial-gradient(circle_at_85%_78%,rgba(34,197,196,0.16),rgba(34,197,196,0)_36%)]" />
+      <footer className="relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#2e6272] bg-gradient-to-b from-[#0f3a49]/95 via-[#0b3140]/96 to-[#082632]/98 backdrop-blur-md">
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(61,235,228,0.2),rgba(61,235,228,0)_40%),radial-gradient(circle_at_85%_78%,rgba(92,204,255,0.18),rgba(92,204,255,0)_38%)]" />
         <div className="max-w-7xl mx-auto text-center relative">
-          <div className="text-2xl font-bold text-[#22c5c7] mb-4 tracking-[0.02em]">
+          <div className="text-2xl font-bold text-[#3debe4] mb-4 tracking-[0.02em]">
             Vayu POS
           </div>
-          <p className="text-[#5f7590] dark:text-[#a7bfce] mb-6 transition-colors duration-300">
+          <p className="text-[#d2ebf7] mb-6 transition-colors duration-300">
             Revolutionizing restaurant management with smart technology
           </p>
-          <div className="border-t border-[#ccd7e2] dark:border-[#2a4d5c] pt-8 transition-colors duration-300">
-            <p className="text-[#607691] dark:text-[#a8bfcc] text-sm">
+          <div className="border-t border-[#2a596a] pt-8 transition-colors duration-300">
+            <p className="text-[#b8d4e2] text-sm">
               © {new Date().getFullYear()} Vayu POS. All rights reserved.
             </p>
           </div>

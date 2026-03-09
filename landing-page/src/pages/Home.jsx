@@ -536,17 +536,16 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#2e6272] bg-gradient-to-b from-[#0f3a49]/95 via-[#0b3140]/96 to-[#082632]/98 backdrop-blur-md">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(61,235,228,0.2),rgba(61,235,228,0)_40%),radial-gradient(circle_at_85%_78%,rgba(92,204,255,0.18),rgba(92,204,255,0)_38%)]" />
-        <div className="max-w-7xl mx-auto text-center relative">
-          <div className="text-2xl font-bold text-[#3debe4] mb-4 tracking-[0.02em]">
+      <footer className="py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#164d5b] bg-[linear-gradient(90deg,#0a3a49_0%,#072f3b_55%,#062734_100%)]">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="text-2xl font-extrabold text-white mb-4 tracking-[0.01em]">
             Vayu POS
           </div>
-          <p className="text-[#d2ebf7] mb-6 transition-colors duration-300">
+          <p className="text-[#d2e0e7] mb-6 transition-colors duration-300">
             Revolutionizing restaurant management with smart technology
           </p>
-          <div className="border-t border-[#2a596a] pt-8 transition-colors duration-300">
-            <p className="text-[#b8d4e2] text-sm">
+          <div className="border-t border-[#2c5967] pt-8 transition-colors duration-300">
+            <p className="text-[#c3d4dc] text-sm">
               © {new Date().getFullYear()} Vayu POS. All rights reserved.
             </p>
           </div>

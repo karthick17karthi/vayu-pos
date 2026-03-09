@@ -321,8 +321,8 @@ const Home = () => {
       </section>
 
       {/* Features Section - DYNAMIC */}
-      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-transparent relative transition-colors duration-300">
-        <div className="max-w-7xl mx-auto">
+      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 relative transition-colors duration-300 bg-white/24 dark:bg-slate-950/22 border-y border-white/35 dark:border-white/10 backdrop-blur-[2px]">
+        <div className="max-w-7xl mx-auto relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -373,9 +373,8 @@ const Home = () => {
       </section>
 
       {/* Pricing Section - DYNAMIC */}
-      <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 bg-transparent relative overflow-hidden transition-colors duration-300">
-        <div className="absolute inset-0 bg-gradient-to-br from-black/15 via-black/5 to-black/20"></div>
-        <div className="absolute inset-0 backdrop-blur-md bg-white/5 dark:bg-white/5"></div>
+      <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden transition-colors duration-300 bg-white/44 dark:bg-slate-950/34 border-y border-white/45 dark:border-white/10 backdrop-blur-md">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/24 via-slate-100/12 to-slate-200/30 dark:from-black/25 dark:via-black/10 dark:to-black/30"></div>
         <div className="relative max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -461,7 +460,7 @@ const Home = () => {
       </section>
 
       {/* Demo Request Form Section */}
-      <section id="demo" className="py-24 px-4 sm:px-6 lg:px-8 bg-transparent transition-colors duration-300">
+      <section id="demo" className="py-24 px-4 sm:px-6 lg:px-8 transition-colors duration-300 bg-white/24 dark:bg-slate-950/20 border-y border-white/35 dark:border-white/10 backdrop-blur-[2px]">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -537,16 +536,17 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-transparent text-slate-200 dark:text-slate-200 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent mb-4">
+      <footer className="relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#c9d6df]/70 dark:border-[#1d3f4c]/90 bg-gradient-to-b from-[#f2f4f7]/78 via-[#e9edf2]/70 to-[#d7dee7]/74 dark:from-[#0b3642]/96 dark:via-[#082f3a]/96 dark:to-[#071f27]/98 backdrop-blur-md">
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.35),rgba(255,255,255,0)_38%),radial-gradient(circle_at_85%_78%,rgba(34,197,196,0.16),rgba(34,197,196,0)_36%)]" />
+        <div className="max-w-7xl mx-auto text-center relative">
+          <div className="text-2xl font-bold text-[#22c5c7] mb-4 tracking-[0.02em]">
             Vayu POS
           </div>
-          <p className="text-slate-500 dark:text-slate-300 mb-6 transition-colors duration-300">
+          <p className="text-[#5f7590] dark:text-[#a7bfce] mb-6 transition-colors duration-300">
             Revolutionizing restaurant management with smart technology
           </p>
-          <div className="border-t border-slate-200 dark:border-white/10 pt-8 transition-colors duration-300">
-            <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <div className="border-t border-[#ccd7e2] dark:border-[#2a4d5c] pt-8 transition-colors duration-300">
+            <p className="text-[#607691] dark:text-[#a8bfcc] text-sm">
               © {new Date().getFullYear()} Vayu POS. All rights reserved.
             </p>
           </div>

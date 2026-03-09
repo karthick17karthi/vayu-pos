@@ -69,6 +69,8 @@ export default function SuperAdminLanding() {
     demoForm: '',
   });
 
+  const confirmAction = (message) => window.confirm(message);
+
   const { theme } = useTheme();
   const themeConfig = getThemeConfig(theme);
   const inputClass = themeConfig.classes['input-field'];
@@ -217,7 +219,7 @@ export default function SuperAdminLanding() {
     setFeaturesDraft((prev) => {
       if (prev.length >= MAX_FEATURES) return prev;
       const newId = prev.length > 0 ? Math.max(...prev.map((item) => item.id)) + 1 : 1;
-      return [...prev, { id: newId, title: newFeature.title, description: newFeature.description, icon: newFeature.icon, active: newFeature.active }];
+      return [...prev, { id: newId, title: newFeature.title, description: newFeature.description, icon: newFeature.icon, active: true }];
     });
     setNewFeature({ title: '', description: '', icon: 'billing', active: true });
     setShowFeatureModal(false);
@@ -229,6 +231,7 @@ export default function SuperAdminLanding() {
   };
 
   const deleteFeature = (index) => {
+    if (!confirmAction('Are you sure you want to delete this feature?')) return;
     setFeaturesDraft((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -269,6 +272,7 @@ export default function SuperAdminLanding() {
   };
 
   const deletePricingPlan = (index) => {
+    if (!confirmAction('Are you sure you want to delete this pricing plan?')) return;
     setPricingDraft((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -314,6 +318,7 @@ export default function SuperAdminLanding() {
   };
 
   const removeDemoField = (index) => {
+    if (!confirmAction('Are you sure you want to delete this demo form field?')) return;
     setDemoFormDraft((prev) => ({
       ...prev,
       fields: prev.fields.filter((_, i) => i !== index),
@@ -405,14 +410,20 @@ export default function SuperAdminLanding() {
               Edit
             </button>
             <button
-              onClick={() => saveSection(SECTION_KEYS.hero, heroDraft)}
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to save Hero Section changes?')) return;
+                saveSection(SECTION_KEYS.hero, heroDraft);
+              }}
               disabled={!heroEditMode || savingState.hero}
               className={`px-3 py-2 ${primaryButton} text-sm disabled:opacity-60 disabled:cursor-not-allowed`}
             >
               {savingState.hero ? 'Saving...' : 'Save'}
             </button>
             <button
-              onClick={cancelHeroEdit}
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to cancel Hero Section changes?')) return;
+                cancelHeroEdit();
+              }}
               disabled={!heroEditMode}
               className="px-3 py-2 rounded-lg bg-red-500/80 text-white text-sm disabled:opacity-50"
             >
@@ -488,14 +499,20 @@ export default function SuperAdminLanding() {
               Edit
             </button>
             <button
-              onClick={() => saveSection(SECTION_KEYS.features, featuresDraft)}
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to save Features Section changes?')) return;
+                saveSection(SECTION_KEYS.features, featuresDraft);
+              }}
               disabled={!featuresEditMode || savingState.features}
               className={`px-3 py-2 ${primaryButton} text-sm disabled:opacity-60 disabled:cursor-not-allowed`}
             >
               {savingState.features ? 'Saving...' : 'Save'}
             </button>
             <button
-              onClick={cancelFeaturesEdit}
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to cancel Features Section changes?')) return;
+                cancelFeaturesEdit();
+              }}
               disabled={!featuresEditMode}
               className="px-3 py-2 rounded-lg bg-red-500/80 text-white text-sm disabled:opacity-50"
             >
@@ -578,16 +595,6 @@ export default function SuperAdminLanding() {
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={feature.active}
-                    onChange={(e) => updateFeature(index, 'active', e.target.checked)}
-                    disabled={!featuresEditMode}
-                    className="h-4 w-4 rounded border-slate-300 text-cyan-400 focus:ring-cyan-400 dark:border-white/10"
-                  />
-                  <span className="ml-2 text-sm text-slate-700 dark:text-slate-200">Active</span>
-                </label>
                 <button
                   onClick={() => deleteFeature(index)}
                   disabled={!featuresEditMode}
@@ -621,14 +628,20 @@ export default function SuperAdminLanding() {
               Edit
             </button>
             <button
-              onClick={() => saveSection(SECTION_KEYS.pricing, pricingDraft)}
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to save Pricing Plans Section changes?')) return;
+                saveSection(SECTION_KEYS.pricing, pricingDraft);
+              }}
               disabled={!pricingEditMode || savingState.pricing}
               className={`px-3 py-2 ${primaryButton} text-sm disabled:opacity-60 disabled:cursor-not-allowed`}
             >
               {savingState.pricing ? 'Saving...' : 'Save'}
             </button>
             <button
-              onClick={cancelPricingEdit}
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to cancel Pricing Plans Section changes?')) return;
+                cancelPricingEdit();
+              }}
               disabled={!pricingEditMode}
               className="px-3 py-2 rounded-lg bg-red-500/80 text-white text-sm disabled:opacity-50"
             >
@@ -734,14 +747,20 @@ export default function SuperAdminLanding() {
               Edit
             </button>
             <button
-              onClick={() => saveSection(SECTION_KEYS.demoForm, demoFormDraft)}
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to save Demo Form Section changes?')) return;
+                saveSection(SECTION_KEYS.demoForm, demoFormDraft);
+              }}
               disabled={!demoFormEditMode || savingState.demoForm}
               className={`px-3 py-2 ${primaryButton} text-sm disabled:opacity-60 disabled:cursor-not-allowed`}
             >
               {savingState.demoForm ? 'Saving...' : 'Save'}
             </button>
             <button
-              onClick={cancelDemoFormEdit}
+              onClick={() => {
+                if (!confirmAction('Are you sure you want to cancel Demo Form Section changes?')) return;
+                cancelDemoFormEdit();
+              }}
               disabled={!demoFormEditMode}
               className="px-3 py-2 rounded-lg bg-red-500/80 text-white text-sm disabled:opacity-50"
             >
@@ -944,20 +963,13 @@ export default function SuperAdminLanding() {
                   className={inputClass}
                 />
               </div>
-              <div className="flex items-center gap-2">
-                <input
-                  id="new-feature-active"
-                  type="checkbox"
-                  checked={newFeature.active}
-                  onChange={(e) => setNewFeature((prev) => ({ ...prev, active: e.target.checked }))}
-                  className="h-4 w-4 rounded border-slate-300 text-cyan-400 focus:ring-cyan-400 dark:border-white/10"
-                />
-                <label htmlFor="new-feature-active" className="text-sm text-slate-700 dark:text-slate-200">Active</label>
-              </div>
             </div>
             <div className="mt-6 flex justify-end gap-3">
               <button
-                onClick={() => setShowFeatureModal(false)}
+                onClick={() => {
+                  if (!confirmAction('Are you sure you want to cancel adding this feature?')) return;
+                  setShowFeatureModal(false);
+                }}
                 className="rounded-xl border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
               >
                 Cancel
@@ -1024,7 +1036,10 @@ export default function SuperAdminLanding() {
             </div>
             <div className="mt-6 flex justify-end gap-3">
               <button
-                onClick={() => setShowPlanModal(false)}
+                onClick={() => {
+                  if (!confirmAction('Are you sure you want to cancel adding this pricing plan?')) return;
+                  setShowPlanModal(false);
+                }}
                 className="rounded-xl border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
               >
                 Cancel
@@ -1104,7 +1119,10 @@ export default function SuperAdminLanding() {
             </div>
             <div className="mt-6 flex justify-end gap-3">
               <button
-                onClick={() => setShowFieldModal(false)}
+                onClick={() => {
+                  if (!confirmAction('Are you sure you want to cancel adding this field?')) return;
+                  setShowFieldModal(false);
+                }}
                 className="rounded-xl border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
               >
                 Cancel

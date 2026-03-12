@@ -9,7 +9,7 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }) {
   const themeConfig = getThemeConfig(theme);
 
   return (
-    <div className="h-16 w-full border-b border-slate-200 bg-white/90 shadow-md transition-theme duration-theme ease-theme dark:border-white/10 dark:bg-[#0e2a33] z-40">
+    <div className="h-16 w-full border-b border-slate-200 bg-white/90 shadow-md transition-theme duration-theme ease-theme dark:border-white/10 dark:bg-[#0e2a33] z-40 animate-slide-down">
       <div className="flex h-full w-full items-center justify-between px-8">
         {/* Logo and Title Section */}
         <div className="flex items-center gap-4">
@@ -71,7 +71,7 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }) {
 
             {/* Dropdown Menu */}
             {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#0e2a33] rounded-lg shadow-xl border border-slate-200 dark:border-white/10 py-2 z-50 transition-theme duration-theme ease-theme">
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#0e2a33] rounded-lg shadow-xl border border-slate-200 dark:border-white/10 py-2 z-50 transition-theme duration-theme ease-theme animate-scale-in">
                 {/* Profile Info */}
                 <div className="px-4 py-3 border-b border-slate-200 dark:border-white/10">
                   <p className="text-sm font-semibold text-slate-900 dark:text-white">Super Admin</p>

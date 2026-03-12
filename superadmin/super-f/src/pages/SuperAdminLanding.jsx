@@ -54,7 +54,7 @@ const createDefaultFooterDraft = () => ({
     { type: 'email', value: 'support@vayupos.com' },
     { type: 'location', value: 'Madhapur, Hyderabad, Telangana 500032' },
   ],
-  copyrightText: '© {year} Vayu POS. All rights reserved.',
+  copyrightText: '© 2026 Vayu POS. All rights reserved.',
 });
 
 const normalizeFooterDraft = (footer) => ({

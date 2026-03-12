@@ -2,13 +2,16 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { getThemeConfig } from '../theme/designSystem.js';
 
-export default function StatCard({ label, value, change, color }) {
+export default function StatCard({ label, value, change, color, animIndex = 0 }) {
   const isPositive = change.startsWith('+');
   const { theme } = useTheme();
   const themeConfig = getThemeConfig(theme);
 
   return (
-    <div className={`${themeConfig.classes.card} p-4 md:p-6 hover:shadow-lg transition-theme duration-theme ease-theme`}>
+    <div
+      className={`${themeConfig.classes.card} p-4 md:p-6 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-out animate-fade-up`}
+      style={{ animationDelay: `${animIndex * 0.1}s` }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-slate-600 dark:text-slate-300 text-xs md:text-sm font-medium">

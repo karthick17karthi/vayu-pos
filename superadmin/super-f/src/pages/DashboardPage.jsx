@@ -19,13 +19,14 @@ export default function DashboardPage() {
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
+        {stats.map((stat, index) => (
           <StatCard
             key={stat.id}
             label={stat.label}
             value={stat.value}
             change={stat.change}
             color={stat.color}
+            animIndex={index}
           />
         ))}
       </div>
@@ -47,17 +48,17 @@ export default function DashboardPage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className={`${themeConfig.classes.card} p-6 transition-theme duration-theme ease-theme`}>
+        <div className={`${themeConfig.classes.card} p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 animate-fade-up`} style={{ animationDelay: '0.35s' }}>
           <h3 className="text-slate-600 dark:text-slate-300 text-sm font-medium mb-2">Today's Revenue</h3>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">$3,450</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">Last updated 5 minutes ago</p>
         </div>
-        <div className={`${themeConfig.classes.card} p-6 transition-theme duration-theme ease-theme`}>
+        <div className={`${themeConfig.classes.card} p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 animate-fade-up`} style={{ animationDelay: '0.45s' }}>
           <h3 className="text-slate-600 dark:text-slate-300 text-sm font-medium mb-2">Active Offers</h3>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">4</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">Generating sales</p>
         </div>
-        <div className={`${themeConfig.classes.card} p-6 transition-theme duration-theme ease-theme`}>
+        <div className={`${themeConfig.classes.card} p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 animate-fade-up`} style={{ animationDelay: '0.55s' }}>
           <h3 className="text-slate-600 dark:text-slate-300 text-sm font-medium mb-2">Total Users</h3>
           <p className="text-2xl font-bold text-slate-900 dark:text-white">128</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">+12 this week</p>

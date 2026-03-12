@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect, useRef } from 'react'
+import { motion, useScroll, useSpring, useMotionValue, useTransform, useInView } from 'framer-motion'
 import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings, Menu, X, Check, LayoutGrid, Phone, Mail, MapPin, Link2, Instagram, Facebook, Youtube, Linkedin, Twitter, Globe, MessageCircle } from 'lucide-react'
 
 
@@ -42,6 +42,61 @@ const SOCIAL_LINK_VISUALS = {
 
 const getSocialLinkVisual = (platform) => SOCIAL_LINK_VISUALS[String(platform || '').toLowerCase()] || SOCIAL_LINK_VISUALS.website
 
+// ── Animation helpers ────────────────────────────────────────────────────────
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.13 } },
+}
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' } },
+}
+
+const CountUp = ({ target, duration = 1.4 }) => {
+  const [count, setCount] = useState(0)
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true })
+  useEffect(() => {
+    if (!inView || typeof target !== 'number') return
+    const startTime = performance.now()
+    const tick = (now) => {
+      const progress = Math.min((now - startTime) / (duration * 1000), 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setCount(Math.floor(eased * target))
+      if (progress < 1) requestAnimationFrame(tick)
+      else setCount(target)
+    }
+    requestAnimationFrame(tick)
+  }, [inView, target, duration])
+  return <span ref={ref}>{count.toLocaleString()}</span>
+}
+
+const TiltCard = ({ children, className, initial, whileInView, viewport, transition }) => {
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const rotateX = useTransform(my, [-60, 60], [7, -7])
+  const rotateY = useTransform(mx, [-60, 60], [-7, 7])
+  return (
+    <motion.div
+      style={{ rotateX, rotateY, transformPerspective: 900 }}
+      onMouseMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        mx.set(e.clientX - r.left - r.width / 2)
+        my.set(e.clientY - r.top - r.height / 2)
+      }}
+      onMouseLeave={() => { mx.set(0); my.set(0) }}
+      initial={initial}
+      whileInView={whileInView}
+      viewport={viewport}
+      transition={transition}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 const Home = () => {
   // CMS Data State
   const [landingData, setLandingData] = useState(null)
@@ -51,6 +106,10 @@ const Home = () => {
   const [formData, setFormData] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  // Scroll progress bar
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, { stiffness: 180, damping: 30 })
 
   // Fetch landing data on mount
   useEffect(() => {
@@ -196,6 +255,11 @@ const Home = () => {
 
   return (
     <div className="w-full min-h-screen scroll-smooth bg-transparent text-slate-100 dark:text-white transition-colors duration-300">
+      {/* Scroll Progress Bar */}
+      <motion.div
+        style={{ scaleX }}
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-teal-400 via-cyan-400 to-sky-400 origin-left z-[60] shadow-[0_0_8px_rgba(34,211,238,0.75)]"
+      />
       {/* Fixed Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur-md shadow-sm transition-colors duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -302,6 +366,16 @@ const Home = () => {
           }}
           className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl bg-teal-400/10 dark:bg-white/10"
         />
+        <motion.div
+          animate={{ x: [0, 18, 0], y: [0, -22, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+          className="absolute top-1/2 left-1/4 w-52 h-52 rounded-full blur-3xl bg-teal-300/8 pointer-events-none"
+        />
+        <motion.div
+          animate={{ x: [0, -14, 0], y: [0, 16, 0], scale: [1, 1.08, 1] }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+          className="absolute top-1/3 right-1/3 w-60 h-60 rounded-full blur-3xl bg-cyan-300/8 pointer-events-none"
+        />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -310,11 +384,26 @@ const Home = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white text-center mb-6 leading-[1.2] md:leading-[1.25] transition-colors duration-300">
-              {landingData.hero.title}
+              {landingData.hero.title.split(' ').map((word, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 22 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.3 + i * 0.09, ease: 'easeOut' }}
+                  className="inline-block"
+                >
+                  {word}{'\u00A0'}
+                </motion.span>
+              ))}
             </h1>
-            <p className="text-xl sm:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed text-slate-600 dark:text-slate-200 transition-colors duration-300">
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="text-xl sm:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed text-slate-600 dark:text-slate-200 transition-colors duration-300"
+            >
               {landingData.hero.subtitle}
-            </p>
+            </motion.p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -363,26 +452,29 @@ const Home = () => {
                 const FeatureIcon = visual.icon
                 
                 return (
-                  <motion.div
+                  <TiltCard
                     key={feature.id}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    whileHover={{ y: -10 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                    className="relative group"
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="relative group cursor-pointer"
                   >
-                    <div className={`absolute inset-0 bg-gradient-to-r ${visual.bg} rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-300`}></div>
+                    <div className={`absolute inset-0 bg-gradient-to-r ${visual.bg} rounded-2xl blur opacity-20 group-hover:opacity-70 transition duration-300`}></div>
                     <div className="relative bg-white dark:bg-[#0e2a33] backdrop-blur-md p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-white/10 h-full transition-colors duration-300">
-                      <div className={`bg-gradient-to-br ${visual.from} ${visual.to} w-16 h-16 rounded-xl flex items-center justify-center mb-6 shadow-lg`}>
+                      <motion.div
+                        whileHover={{ scale: 1.15, rotate: 10 }}
+                        transition={{ type: 'spring', stiffness: 320 }}
+                        className={`bg-gradient-to-br ${visual.from} ${visual.to} w-16 h-16 rounded-xl flex items-center justify-center mb-6 shadow-lg`}
+                      >
                         <FeatureIcon className="w-8 h-8 text-white" />
-                      </div>
+                      </motion.div>
                       <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4 transition-colors duration-300">{feature.title}</h3>
                       <p className="text-slate-600 dark:text-slate-300 leading-relaxed transition-colors duration-300">
                         {feature.description}
                       </p>
                     </div>
-                  </motion.div>
+                  </TiltCard>
                 )
               })}
           </div>
@@ -440,7 +532,7 @@ const Home = () => {
                     </h3>
                     <div className="flex items-baseline mb-4">
                       <span className={`text-5xl font-extrabold ${isPopular ? 'text-slate-900 dark:text-white' : 'text-slate-900 dark:text-white'}`}>
-                        {typeof plan.price === 'number' ? `₹${plan.price.toLocaleString()}` : plan.price}
+                        {typeof plan.price === 'number' ? <>₹<CountUp target={plan.price} /></> : plan.price}
                       </span>
                       {typeof plan.price === 'number' && (
                         <span className={`ml-2 ${isPopular ? 'text-slate-600 dark:text-cyan-100' : 'text-slate-600 dark:text-slate-300'}`}>
@@ -503,9 +595,15 @@ const Home = () => {
           >
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Row 1: Owner Name and Hotel Name */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
                 {landingData.demoForm.fields.map((field) => (
-                  <div key={field.key} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
+                  <motion.div variants={staggerItem} key={field.key} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
                     <label htmlFor={field.key} className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2 transition-colors duration-300">
                       {field.label} {field.required && <span className="text-red-500">*</span>}
                     </label>
@@ -533,20 +631,20 @@ const Home = () => {
                         className="w-full px-4 py-3 border border-slate-200 dark:border-white/10 rounded-lg bg-white dark:bg-[#0e2a33] text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition duration-200"
                       />
                     )}
-                  </div>
+                    </motion.div>
                 ))}
-              </div>
+                </motion.div>
 
               {/* Submit Button */}
-              <div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-teal-500 to-cyan-400 text-white py-4 px-8 rounded-lg font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-[0_0_22px_rgba(34,211,238,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? 'Submitting...' : landingData.demoForm.submitText}
-                </button>
-              </div>
+                <motion.div whileHover={{ scale: isSubmitting ? 1 : 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-teal-500 to-cyan-400 text-white py-4 px-8 rounded-lg font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-[0_0_22px_rgba(34,211,238,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? 'Submitting...' : landingData.demoForm.submitText}
+                  </button>
+                </motion.div>
             </form>
           </motion.div>
         </div>
@@ -555,20 +653,33 @@ const Home = () => {
       {/* Footer */}
       <footer className="py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#164d5b] bg-[linear-gradient(90deg,#0a3a49_0%,#072f3b_55%,#062734_100%)]">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <div>
-              <div className="text-2xl font-extrabold text-white tracking-[0.01em]">
-                {landingData.footer?.brandTitle || 'Vayu POS'}
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+          >
+            <motion.div variants={staggerItem}>
+              <div className="flex items-start gap-3">
+                <div className="rounded-md border border-white/20 bg-white/10 p-2 text-[#42b2ff]">
+                  <LayoutGrid size={20} />
+                </div>
+                <div>
+                  <div className="text-2xl font-extrabold text-white tracking-[0.01em] leading-tight">
+                    {landingData.footer?.brandTitle || 'Vayu POS'}
+                  </div>
+                  <p className="mt-1 text-[#42b2ff] text-base font-medium leading-tight">
+                    {landingData.footer?.brandSubtitle || 'Restaurant Management Made Easy'}
+                  </p>
+                </div>
               </div>
-              <p className="mt-1 text-[#42b2ff] text-base font-medium">
-                {landingData.footer?.brandSubtitle || 'Restaurant Management Made Easy'}
-              </p>
               <p className="mt-3 text-[#d2e0e7] leading-relaxed text-base font-medium">
                 {landingData.footer?.description || 'Efficient restaurant management in one platform.'}
               </p>
-            </div>
+            </motion.div>
 
-            <div>
+            <motion.div variants={staggerItem}>
               <h3 className="text-white text-lg font-bold mb-3">{landingData.footer?.socialLinksTitle || 'Follow Us'}</h3>
               <div className="flex flex-wrap gap-4">
                 {(landingData.footer?.socialLinks || []).map((link, index) => {
@@ -590,9 +701,9 @@ const Home = () => {
                   )
                 })}
               </div>
-            </div>
+            </motion.div>
 
-            <div>
+            <motion.div variants={staggerItem}>
               <h3 className="text-white text-lg font-bold mb-3">{landingData.footer?.contactTitle || 'Contact Info'}</h3>
               <div className="space-y-3">
                 {(landingData.footer?.contacts || []).map((item, index) => {
@@ -605,14 +716,12 @@ const Home = () => {
                   )
                 })}
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           <div className="border-t border-[#2c5967] mt-6 pt-4 text-center">
             <p className="text-[#c3d4dc] text-sm">
-              {(landingData.footer?.copyrightText || '(c) {year} Vayu POS. All rights reserved.')
-                .replace('{year}', new Date().getFullYear())
-                .replace('(c)', '©')}
+              {landingData.footer?.copyrightText || '© 2026 Vayu POS. All rights reserved.'}
             </p>
           </div>
         </div>

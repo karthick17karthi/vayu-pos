@@ -45,9 +45,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
         {/* Menu Items */}
         <nav className="mt-6 flex-1 px-0 space-y-0">
-          {menuItems.map((item) => (
+          {menuItems.map((item, idx) => (
+            <div key={item.path} className="animate-slide-in" style={{ animationDelay: `${idx * 0.06}s` }}>
             <NavLink
-              key={item.path}
               to={item.path}
               onClick={() => window.innerWidth < 768 && setSidebarOpen(false)}
               className={({ isActive }) =>
@@ -62,6 +62,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
             >
               <span className="font-medium text-sm">{item.label}</span>
             </NavLink>
+            </div>
           ))}
         </nav>
 

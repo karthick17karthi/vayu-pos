@@ -60,7 +60,8 @@ export default function Table({ columns, data, title }) {
             {paginatedData.map((row, idx) => (
               <tr
                 key={idx}
-                className="border-b border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors duration-200"
+                className="border-b border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors duration-200 animate-fade-up"
+                style={{ animationDelay: `${idx * 0.05}s` }}
               >
                 {columns.map((col) => (
                   <td

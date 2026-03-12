@@ -9,16 +9,7 @@ const THEMES = {
 const ThemeContext = createContext(undefined)
 
 const resolveInitialTheme = () => {
-  if (typeof window === 'undefined') {
-    return THEMES.DARK
-  }
-
-  const savedTheme = window.localStorage.getItem(THEME_KEY)
-  if (savedTheme === THEMES.DARK || savedTheme === THEMES.LIGHT) {
-    return savedTheme
-  }
-
-  return THEMES.DARK
+  return THEMES.LIGHT
 }
 
 export const ThemeProvider = ({ children }) => {
@@ -26,10 +17,7 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     const root = document.documentElement
-    root.classList.toggle(THEMES.DARK, theme === THEMES.DARK)
-    root.classList.add('transition-colors', 'duration-300')
-    document.body.classList.add('transition-colors', 'duration-300')
-    window.localStorage.setItem(THEME_KEY, theme)
+    root.classList.remove(THEMES.DARK)
   }, [theme])
 
   const setDark = () => setTheme(THEMES.DARK)

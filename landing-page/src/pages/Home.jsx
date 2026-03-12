@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings, Menu, X, Check, LayoutGrid, Phone, Mail, MapPin, Link2 } from 'lucide-react'
-import { ThemeToggleButton, useTheme } from '../context/ThemeContext'
+import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings, Menu, X, Check, LayoutGrid, Phone, Mail, MapPin, Link2, Instagram, Facebook, Youtube, Linkedin, Twitter, Globe, MessageCircle } from 'lucide-react'
+
 
 const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV
   ? 'http://localhost:8000'
@@ -30,8 +30,19 @@ const getFooterContactIcon = (type) => {
   return Link2
 }
 
+const SOCIAL_LINK_VISUALS = {
+  instagram: { icon: Instagram, label: 'Instagram' },
+  facebook: { icon: Facebook, label: 'Facebook' },
+  youtube: { icon: Youtube, label: 'YouTube' },
+  linkedin: { icon: Linkedin, label: 'LinkedIn' },
+  twitter: { icon: Twitter, label: 'X / Twitter' },
+  whatsapp: { icon: MessageCircle, label: 'WhatsApp' },
+  website: { icon: Globe, label: 'Website' },
+}
+
+const getSocialLinkVisual = (platform) => SOCIAL_LINK_VISUALS[String(platform || '').toLowerCase()] || SOCIAL_LINK_VISUALS.website
+
 const Home = () => {
-  const { isDark } = useTheme()
   // CMS Data State
   const [landingData, setLandingData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -76,14 +87,6 @@ const Home = () => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
       setIsMobileMenuOpen(false)
     }
-  }
-
-  const handleFooterQuickLinkClick = (linkText) => {
-    const text = String(linkText || '').toLowerCase()
-    if (text.includes('feature')) return scrollToSection('features')
-    if (text.includes('pricing')) return scrollToSection('pricing')
-    if (text.includes('demo') || text.includes('request')) return scrollToSection('demo')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   // Handle form input changes
@@ -230,13 +233,12 @@ const Home = () => {
               >
                 Demo
               </button>
-              <ThemeToggleButton />
             </div>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`md:hidden transition-colors duration-200 ${isDark ? 'text-slate-100 hover:text-cyan-300' : 'text-slate-700 hover:text-teal-500'}`}
+              className="md:hidden transition-colors duration-200 text-slate-700 hover:text-teal-500"
             >
               {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -268,7 +270,6 @@ const Home = () => {
               >
                 Demo
               </button>
-              <ThemeToggleButton className="w-full justify-center" />
             </motion.div>
           )}
         </div>
@@ -552,45 +553,54 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-14 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#164d5b] bg-[linear-gradient(90deg,#0a3a49_0%,#072f3b_55%,#062734_100%)]">
+      <footer className="py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-300 border-t border-[#164d5b] bg-[linear-gradient(90deg,#0a3a49_0%,#072f3b_55%,#062734_100%)]">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <div>
-              <div className="text-3xl font-extrabold text-white tracking-[0.01em]">
+              <div className="text-2xl font-extrabold text-white tracking-[0.01em]">
                 {landingData.footer?.brandTitle || 'Vayu POS'}
               </div>
-              <p className="mt-2 text-[#42b2ff] text-lg font-medium">
+              <p className="mt-1 text-[#42b2ff] text-base font-medium">
                 {landingData.footer?.brandSubtitle || 'Restaurant Management Made Easy'}
               </p>
-              <p className="mt-6 text-[#d2e0e7] leading-relaxed text-lg md:text-xl font-medium">
+              <p className="mt-3 text-[#d2e0e7] leading-relaxed text-base font-medium">
                 {landingData.footer?.description || 'Efficient restaurant management in one platform.'}
               </p>
             </div>
 
             <div>
-              <h3 className="text-white text-2xl font-bold mb-6">{landingData.footer?.quickLinksTitle || 'Quick Links'}</h3>
-              <div className="flex flex-col gap-4">
-                {(landingData.footer?.quickLinks || []).map((link, index) => (
-                  <button
-                    key={`footer-link-${index}`}
-                    onClick={() => handleFooterQuickLinkClick(link)}
-                    className="text-left text-[#b9cad5] text-lg md:text-xl leading-[1.2] hover:text-white transition-colors"
-                  >
-                    {link}
-                  </button>
-                ))}
+              <h3 className="text-white text-lg font-bold mb-3">{landingData.footer?.socialLinksTitle || 'Follow Us'}</h3>
+              <div className="flex flex-wrap gap-4">
+                {(landingData.footer?.socialLinks || []).map((link, index) => {
+                  const socialVisual = getSocialLinkVisual(link.platform)
+                  const Icon = socialVisual.icon
+
+                  return (
+                    <a
+                      key={`footer-social-${index}`}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={socialVisual.label}
+                      title={socialVisual.label}
+                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[#b9cad5] transition-all hover:-translate-y-1 hover:border-[#42b2ff] hover:bg-[#42b2ff]/10 hover:text-white"
+                    >
+                      <Icon className="h-5 w-5" />
+                    </a>
+                  )
+                })}
               </div>
             </div>
 
             <div>
-              <h3 className="text-white text-2xl font-bold mb-6">{landingData.footer?.contactTitle || 'Contact Info'}</h3>
-              <div className="space-y-5">
+              <h3 className="text-white text-lg font-bold mb-3">{landingData.footer?.contactTitle || 'Contact Info'}</h3>
+              <div className="space-y-3">
                 {(landingData.footer?.contacts || []).map((item, index) => {
                   const Icon = getFooterContactIcon(item.type)
                   return (
-                    <div key={`footer-contact-${index}`} className="flex items-start gap-4 text-[#b9cad5]">
-                      <Icon className="mt-1 h-6 w-6 text-[#42b2ff]" />
-                      <span className="text-lg md:text-xl leading-[1.25]">{item.value}</span>
+                    <div key={`footer-contact-${index}`} className="flex items-start gap-3 text-[#b9cad5]">
+                      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#42b2ff]" />
+                      <span className="text-sm leading-snug">{item.value}</span>
                     </div>
                   )
                 })}
@@ -598,8 +608,8 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="border-t border-[#2c5967] mt-10 pt-8 text-center">
-            <p className="text-[#c3d4dc] text-base md:text-lg">
+          <div className="border-t border-[#2c5967] mt-6 pt-4 text-center">
+            <p className="text-[#c3d4dc] text-sm">
               {(landingData.footer?.copyrightText || '(c) {year} Vayu POS. All rights reserved.')
                 .replace('{year}', new Date().getFullYear())
                 .replace('(c)', '©')}

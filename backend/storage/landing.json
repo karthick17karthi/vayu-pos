@@ -10,7 +10,7 @@
       "id": 1,
       "title": "Billing",
       "description": "Process orders instantly",
-      "icon": "security",
+      "icon": "settings",
       "active": true
     },
     {
@@ -112,13 +112,6 @@
         "placeholder": "Tell us more about your requirements...",
         "type": "textarea",
         "required": false
-      },
-      {
-        "key": "email22",
-        "label": "email-test22",
-        "placeholder": "testing-place",
-        "type": "email",
-        "required": false
       }
     ]
   },
@@ -126,11 +119,12 @@
     "brandTitle": "Vayu POS",
     "brandSubtitle": "Restaurant Management Made Easy",
     "description": "Efficient restaurant management for owners, staff, and administrators. Simplify billing, tracking, and communication in one platform.",
-    "quickLinksTitle": "Quick Links",
-    "quickLinks": [
-      "Features",
-      "Pricing",
-      "Request Demo"
+    "socialLinksTitle": "Follow Us",
+    "socialLinks": [
+      {
+        "platform": "instagram",
+        "url": "https://www.instagram.com/virat.kohli/?hl=en"
+      }
     ],
     "contactTitle": "Contact Info",
     "contacts": [

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
 import { useTheme } from '../context/ThemeContext.jsx';
 import { getThemeConfig } from '../theme/designSystem.js';
-import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings } from 'lucide-react';
+import { CreditCard, Package, FileText, Building2, Headphones, BarChart3, Shield, Settings, Instagram, Facebook, Youtube, Linkedin, Twitter, Globe, MessageCircle } from 'lucide-react';
 import { API_BASE_URL } from '../config/api.js';
 
 const SECTION_KEYS = {
@@ -15,6 +15,16 @@ const SECTION_KEYS = {
 
 const MAX_FEATURES = 8;
 const MAX_PLAN_FEATURES = 6;
+
+const SOCIAL_LINK_OPTIONS = [
+  { key: 'instagram', label: 'Instagram', icon: Instagram },
+  { key: 'facebook', label: 'Facebook', icon: Facebook },
+  { key: 'youtube', label: 'YouTube', icon: Youtube },
+  { key: 'linkedin', label: 'LinkedIn', icon: Linkedin },
+  { key: 'twitter', label: 'X / Twitter', icon: Twitter },
+  { key: 'whatsapp', label: 'WhatsApp', icon: MessageCircle },
+  { key: 'website', label: 'Website', icon: Globe },
+];
 
 // Default feature icons with colors
 const FEATURE_ICONS = [
@@ -30,6 +40,64 @@ const FEATURE_ICONS = [
 
 // Helper to get icon config by key
 const getIconConfig = (key) => FEATURE_ICONS.find((i) => i.key === key) || FEATURE_ICONS[0];
+const getSocialLinkOption = (key) => SOCIAL_LINK_OPTIONS.find((item) => item.key === key) || SOCIAL_LINK_OPTIONS[SOCIAL_LINK_OPTIONS.length - 1];
+
+const createDefaultFooterDraft = () => ({
+  brandTitle: 'Vayu POS',
+  brandSubtitle: 'Restaurant Management Made Easy',
+  description: 'Efficient restaurant management in one platform.',
+  socialLinksTitle: 'Follow Us',
+  socialLinks: [],
+  contactTitle: 'Contact Info',
+  contacts: [
+    { type: 'phone', value: '+91 73581 05293' },
+    { type: 'email', value: 'support@vayupos.com' },
+    { type: 'location', value: 'Madhapur, Hyderabad, Telangana 500032' },
+  ],
+  copyrightText: '© {year} Vayu POS. All rights reserved.',
+});
+
+const normalizeFooterDraft = (footer) => ({
+  ...createDefaultFooterDraft(),
+  ...(footer ?? {}),
+  socialLinksTitle: footer?.socialLinksTitle ?? footer?.quickLinksTitle ?? 'Follow Us',
+  socialLinks: (footer?.socialLinks ?? []).map((link) => ({
+    platform: link?.platform ?? 'instagram',
+    url: link?.url ?? 'https://',
+  })),
+});
+
+function FeatureIconPicker({ selectedIcon, onSelect, compact = false }) {
+  return (
+    <div className={`grid ${compact ? 'grid-cols-4 gap-2' : 'grid-cols-4 gap-3'}`}>
+      {FEATURE_ICONS.map((iconOption) => {
+        const IconComponent = iconOption.icon;
+        const isSelected = selectedIcon === iconOption.key;
+
+        return (
+          <button
+            key={iconOption.key}
+            type="button"
+            onClick={() => onSelect(iconOption.key)}
+            aria-label={iconOption.label}
+            title={iconOption.label}
+            className={`flex items-center justify-center rounded-xl border-2 transition-all ${
+              compact ? 'h-12 w-12' : 'h-16 w-full'
+            } ${
+              isSelected
+                ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-500/20'
+                : 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
+            }`}
+          >
+            <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${iconOption.color}`}>
+              <IconComponent className="h-5 w-5 text-white" />
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function SuperAdminLanding() {
   const [loading, setLoading] = useState(true);
@@ -95,22 +163,7 @@ export default function SuperAdminLanding() {
       })),
     );
     setDemoFormDraft(source.demoForm);
-    setFooterDraft(
-      source.footer ?? {
-        brandTitle: 'Vayu POS',
-        brandSubtitle: 'Restaurant Management Made Easy',
-        description: 'Efficient restaurant management in one platform.',
-        quickLinksTitle: 'Quick Links',
-        quickLinks: ['Features', 'Pricing', 'Request Demo'],
-        contactTitle: 'Contact Info',
-        contacts: [
-          { type: 'phone', value: '+91 73581 05293' },
-          { type: 'email', value: 'support@vayupos.com' },
-          { type: 'location', value: 'Madhapur, Hyderabad, Telangana 500032' },
-        ],
-        copyrightText: '© {year} Vayu POS. All rights reserved.',
-      },
-    );
+    setFooterDraft(normalizeFooterDraft(source.footer));
   };
 
   const fetchLandingData = async () => {
@@ -152,7 +205,10 @@ export default function SuperAdminLanding() {
       if (sectionKey === SECTION_KEYS.pricing) {
         normalizedSectionValue = (sectionValue ?? []).map((plan) => ({
           ...plan,
-          features: (plan.features ?? []).slice(0, MAX_PLAN_FEATURES),
+          features: (plan.features ?? [])
+            .map((item) => item.trim())
+            .filter((item) => item !== '')
+            .slice(0, MAX_PLAN_FEATURES),
         }));
       }
 
@@ -226,7 +282,7 @@ export default function SuperAdminLanding() {
 
   const cancelFooterEdit = () => {
     if (data?.footer) {
-      setFooterDraft(data.footer);
+      setFooterDraft(normalizeFooterDraft(data.footer));
     }
     setFooterEditMode(false);
   };
@@ -277,9 +333,7 @@ export default function SuperAdminLanding() {
   const updatePricingFeatures = (index, value) => {
     const features = value
       .split('\n')
-      .map((item) => item.trim())
-      .filter((item) => item !== '')
-      .slice(0, MAX_PLAN_FEATURES);
+      .map((item) => item.trim());
     updatePricing(index, 'features', features);
   };
 
@@ -382,29 +436,29 @@ export default function SuperAdminLanding() {
     }));
   };
 
-  const updateFooterQuickLink = (index, value) => {
+  const updateFooterSocialLink = (index, field, value) => {
     setFooterDraft((prev) => {
-      const next = [...(prev?.quickLinks ?? [])];
-      next[index] = value;
+      const next = [...(prev?.socialLinks ?? [])];
+      next[index] = { ...next[index], [field]: value };
       return {
         ...prev,
-        quickLinks: next,
+        socialLinks: next,
       };
     });
   };
 
-  const addFooterQuickLink = () => {
+  const addFooterSocialLink = () => {
     setFooterDraft((prev) => ({
       ...prev,
-      quickLinks: [...(prev?.quickLinks ?? []), 'New Link'],
+      socialLinks: [...(prev?.socialLinks ?? []), { platform: 'instagram', url: 'https://' }],
     }));
   };
 
-  const deleteFooterQuickLink = (index) => {
-    if (!confirmAction('Are you sure you want to delete this quick link?')) return;
+  const deleteFooterSocialLink = (index) => {
+    if (!confirmAction('Are you sure you want to delete this social link?')) return;
     setFooterDraft((prev) => ({
       ...prev,
-      quickLinks: (prev?.quickLinks ?? []).filter((_, i) => i !== index),
+      socialLinks: (prev?.socialLinks ?? []).filter((_, i) => i !== index),
     }));
   };
 
@@ -640,20 +694,11 @@ export default function SuperAdminLanding() {
                 <div className="flex-shrink-0">
                   <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Icon</label>
                   {featuresEditMode ? (
-                    <div className="relative">
-                      <select
-                        value={feature.icon || 'billing'}
-                        onChange={(e) => updateFeature(index, 'icon', e.target.value)}
-                        className={`${inputClass} w-32 pr-8 appearance-none`}
-                      >
-                        {FEATURE_ICONS.map((opt) => (
-                          <option key={opt.key} value={opt.key}>{opt.label}</option>
-                        ))}
-                      </select>
-                      <div className={`absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded bg-gradient-to-br ${iconConfig.color} flex items-center justify-center pointer-events-none`}>
-                        <IconComponent className="w-3 h-3 text-white" />
-                      </div>
-                    </div>
+                    <FeatureIconPicker
+                      selectedIcon={feature.icon || 'billing'}
+                      onSelect={(iconKey) => updateFeature(index, 'icon', iconKey)}
+                      compact
+                    />
                   ) : (
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${iconConfig.color} flex items-center justify-center shadow-lg`}>
                       <IconComponent className="w-6 h-6 text-white" />
@@ -661,7 +706,7 @@ export default function SuperAdminLanding() {
                   )}
                 </div>
                 {/* Title & Description */}
-                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] gap-4 items-end">
                   <div>
                     <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Title</label>
                     <input
@@ -682,16 +727,16 @@ export default function SuperAdminLanding() {
                       className={inputClass}
                     />
                   </div>
+                  <div className="md:pb-[1px]">
+                    <button
+                      onClick={() => deleteFeature(index)}
+                      disabled={!featuresEditMode}
+                      className="w-full px-3 py-3 bg-red-500/80 text-white rounded hover:bg-red-500 text-sm font-medium md:w-auto"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => deleteFeature(index)}
-                  disabled={!featuresEditMode}
-                  className="px-3 py-1 bg-red-500/80 text-white rounded hover:bg-red-500 text-sm font-medium"
-                >
-                  Delete
-                </button>
               </div>
             </div>
             );
@@ -790,7 +835,7 @@ export default function SuperAdminLanding() {
                     className={inputClass}
                   />
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    {plan.features.length}/{MAX_PLAN_FEATURES} features
+                    {plan.features.filter((item) => item.trim() !== '').length}/{MAX_PLAN_FEATURES} features
                   </p>
                 </div>
               </div>
@@ -1081,11 +1126,11 @@ export default function SuperAdminLanding() {
 
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Quick Links Title</label>
+            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Social Links Title</label>
             <input
               type="text"
-              value={footerDraft?.quickLinksTitle ?? ''}
-              onChange={(e) => updateFooter('quickLinksTitle', e.target.value)}
+              value={footerDraft?.socialLinksTitle ?? ''}
+              onChange={(e) => updateFooter('socialLinksTitle', e.target.value)}
               disabled={!footerEditMode}
               className={inputClass}
             />
@@ -1105,34 +1150,53 @@ export default function SuperAdminLanding() {
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-[#0f2530]">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Quick Links</h3>
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Social Media Links</h3>
               <button
-                onClick={addFooterQuickLink}
+                onClick={addFooterSocialLink}
                 disabled={!footerEditMode}
                 className={`${primaryButton} px-3 py-1 text-xs disabled:opacity-60 disabled:cursor-not-allowed`}
               >
-                + Add Link
+                + Add Social Link
               </button>
             </div>
             <div className="space-y-2">
-              {(footerDraft?.quickLinks ?? []).map((link, index) => (
-                <div key={`footer-link-${index}`} className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={link}
-                    onChange={(e) => updateFooterQuickLink(index, e.target.value)}
-                    disabled={!footerEditMode}
-                    className={inputClass}
-                  />
-                  <button
-                    onClick={() => deleteFooterQuickLink(index)}
-                    disabled={!footerEditMode}
-                    className="px-3 py-1 bg-red-500/80 text-white rounded hover:bg-red-500 text-xs font-medium disabled:opacity-50"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
+              {(footerDraft?.socialLinks ?? []).map((link, index) => {
+                const socialOption = getSocialLinkOption(link.platform);
+                const SocialIcon = socialOption.icon;
+
+                return (
+                  <div key={`footer-social-${index}`} className="grid grid-cols-1 md:grid-cols-[150px_56px_1fr_auto] gap-2 items-center">
+                    <select
+                      value={link.platform}
+                      onChange={(e) => updateFooterSocialLink(index, 'platform', e.target.value)}
+                      disabled={!footerEditMode}
+                      className={inputClass}
+                    >
+                      {SOCIAL_LINK_OPTIONS.map((option) => (
+                        <option key={option.key} value={option.key}>{option.label}</option>
+                      ))}
+                    </select>
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-slate-700 dark:border-white/10 dark:bg-white/10 dark:text-slate-100">
+                      <SocialIcon className="h-5 w-5" />
+                    </div>
+                    <input
+                      type="url"
+                      value={link.url}
+                      onChange={(e) => updateFooterSocialLink(index, 'url', e.target.value)}
+                      disabled={!footerEditMode}
+                      className={inputClass}
+                      placeholder="https://example.com/profile"
+                    />
+                    <button
+                      onClick={() => deleteFooterSocialLink(index)}
+                      disabled={!footerEditMode}
+                      className="px-3 py-1 bg-red-500/80 text-white rounded hover:bg-red-500 text-xs font-medium disabled:opacity-50"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -1203,29 +1267,10 @@ export default function SuperAdminLanding() {
             <div className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Select Icon *</label>
-                <div className="grid grid-cols-4 gap-3">
-                  {FEATURE_ICONS.map((iconOption) => {
-                    const IconComponent = iconOption.icon;
-                    const isSelected = newFeature.icon === iconOption.key;
-                    return (
-                      <button
-                        key={iconOption.key}
-                        type="button"
-                        onClick={() => setNewFeature((prev) => ({ ...prev, icon: iconOption.key }))}
-                        className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${
-                          isSelected
-                            ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-500/20'
-                            : 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
-                        }`}
-                      >
-                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${iconOption.color} flex items-center justify-center mb-1`}>
-                          <IconComponent className="w-5 h-5 text-white" />
-                        </div>
-                        <span className="text-xs text-slate-600 dark:text-slate-300">{iconOption.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
+                <FeatureIconPicker
+                  selectedIcon={newFeature.icon}
+                  onSelect={(iconKey) => setNewFeature((prev) => ({ ...prev, icon: iconKey }))}
+                />
               </div>
               <div>
                 <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Title *</label>

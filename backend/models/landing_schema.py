@@ -44,12 +44,17 @@ class FooterContactItem(BaseModel):
     value: str = Field(..., min_length=1)
 
 
+class FooterSocialLinkItem(BaseModel):
+    platform: str = Field(..., min_length=1)
+    url: str = Field(..., min_length=1)
+
+
 class FooterSection(BaseModel):
     brandTitle: str = Field(..., min_length=1)
     brandSubtitle: str = Field(..., min_length=1)
     description: str = Field(..., min_length=1)
-    quickLinksTitle: str = Field(..., min_length=1)
-    quickLinks: list[str] = Field(default_factory=list)
+    socialLinksTitle: str = Field(..., min_length=1)
+    socialLinks: list[FooterSocialLinkItem] = Field(default_factory=list)
     contactTitle: str = Field(..., min_length=1)
     contacts: list[FooterContactItem] = Field(default_factory=list)
     copyrightText: str = Field(..., min_length=1)

@@ -98,8 +98,8 @@ DEFAULT_LANDING_CONTENT = {
         "brandTitle": "Vayu POS",
         "brandSubtitle": "Restaurant Management Made Easy",
         "description": "Efficient restaurant management for owners, staff, and administrators. Simplify billing, tracking, and communication in one platform.",
-        "quickLinksTitle": "Quick Links",
-        "quickLinks": ["Features", "Pricing", "Request Demo"],
+        "socialLinksTitle": "Follow Us",
+        "socialLinks": [],
         "contactTitle": "Contact Info",
         "contacts": [
             {"type": "phone", "value": "+91 73581 05293"},
@@ -125,6 +125,7 @@ class LandingService:
 
         try:
             payload = await asyncio.to_thread(self._read_json_sync)
+            payload = self._normalize_legacy_payload(payload)
             return LandingPageContent.model_validate(payload)
         except json.JSONDecodeError as exc:
             raise LandingServiceError("Landing data file contains invalid JSON") from exc
@@ -152,6 +153,15 @@ class LandingService:
     def _read_json_sync(self) -> dict:
         with self.storage_path.open("r", encoding="utf-8") as file_obj:
             return json.load(file_obj)
+
+    def _normalize_legacy_payload(self, payload: dict) -> dict:
+        footer = payload.get("footer") or {}
+        if "socialLinksTitle" not in footer:
+            footer["socialLinksTitle"] = footer.get("quickLinksTitle", "Follow Us")
+        if "socialLinks" not in footer:
+            footer["socialLinks"] = []
+        payload["footer"] = footer
+        return payload
 
     def _write_json_sync(self, data: dict) -> None:
         with self.storage_path.open("w", encoding="utf-8") as file_obj:
